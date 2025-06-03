@@ -13,7 +13,7 @@ if ! command -v golangci-lint &> /dev/null; then
     exit 1
 fi
 
-golangci-lint migrate
+#golangci-lint migrate
 golangci-lint run ./...
 
 echo "✅ Linting passed."
