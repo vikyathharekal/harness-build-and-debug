@@ -1,17 +1,17 @@
-FROM golang:1.21-alpine
+FROM golang:1.20-alpine
 
-# Install bash, git, curl, and golangci-lint dependencies
-RUN apk add --no-cache bash git curl
+RUN apk add --no-cache curl bash git
 
 # Install golangci-lint
-RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | \
-    sh -s -- -b /usr/local/bin v1.56.2
+RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s latest \
+ && mv ./bin/golangci-lint /usr/local/bin/ \
+ && /usr/local/bin/golangci-lint --version
 
-# Copy your script
-COPY build-and-debug.sh /usr/local/bin/build-and-debug.sh
+# Copy your script into the image
+COPY build-and-debug.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/build-and-debug.sh
 
-# Set working directory (optional)
-WORKDIR /app
+WORKDIR /harness
 
 ENTRYPOINT ["/usr/local/bin/build-and-debug.sh"]
+
