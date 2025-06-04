@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -euo pipefail
 
@@ -8,12 +8,18 @@ go build -v ./...
 echo "✅ Build succeeded."
 
 echo "🔍 Running golangci-lint..."
+
+LINT_OUTPUT_FILE="/harness/lint-output.txt"
+
 if ! command -v golangci-lint &> /dev/null; then
     echo "❌ golangci-lint not found. Please install it: https://golangci-lint.run/usage/install/"
     exit 1
 fi
 
-#golangci-lint migrate
-golangci-lint run ./...
-
-echo "✅ Linting passed."
+if golangci-lint run ./... | tee "$LINT_OUTPUT_FILE"; then
+    echo "✅ Linting passed."
+    exit 0
+else
+    echo "❌ Linting failed."
+    exit 1
+fi
